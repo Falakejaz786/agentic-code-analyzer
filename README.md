@@ -1,6 +1,3 @@
----
-
-```markdown
 # 🧠 Agentic Code Analyzer
 
 Agentic Code Analyzer is an AI-powered coding assistant that **analyzes Python code**, detects errors, computes complexity, executes safely in a sandbox, and provides **LLM-based improvement suggestions** using Google Gemini API — all through an elegant web interface.
@@ -97,11 +94,3 @@ GEMINI_API_KEY=your_api_key_here
 - Integrate **real-time AI explanations** while typing  
 - Add **code refactoring and optimization metrics**  
 - Include **user authentication and history tracking**
-
----
-
-```
-
----
-
-Would you like me to make a **LinkedIn post caption** for this project too? (short, catchy, and recruiter-friendly)
