@@ -34,4 +34,6 @@ async def analyze_code(request: CodeRequest):
 # Optional: Run with uvicorn directly
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("backend:app", host="0.0.0.0", port=8000, reload=True)
+    import os
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("backend:app", host="0.0.0.0", port=port)
