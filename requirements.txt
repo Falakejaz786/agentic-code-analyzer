@@ -4,7 +4,8 @@ mypy
 astor
 networkx
 fastapi
-uvicorn
+uvicorn[standard]
 python-dotenv
 google-generativeai
 radon
+packaging>=21.0
