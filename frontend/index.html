@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Agentic Code Analyzer</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --text: #e2e8f0;
+      --subtext: #94a3b8;
+      --error: #ef4444;
+      --success: #22c55e;
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      outline: none;
+      resize: vertical;
+      background-color: var(--surface);
+      color: var(--text);
+    }
+
+    textarea::placeholder {
+      color: var(--subtext);
+    }
+
+    button {
+      display: block;
+      margin: 1.5rem auto;
+      padding: 12px 20px;
+      font-size: 16px;
+      font-weight: 500;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background: var(--accent-hover);
+      transform: scale(1.03);
+    }
+
+    .output {
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      white-space: pre-wrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      display: none;
+      border: 1px solid #334155;
+    }
+
+    .section {
+      margin-bottom: 1.5rem;
+    }
+
+    .section h3 {
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+
+    .divider {
+      border-top: 1px solid #334155;
+      margin: 1rem 0;
+    }
+
+    pre {
+      background-color: #0a1121;
+      padding: 10px;
+      border-radius: 6px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      color: #cbd5e1;
+    }
+
+    .status-success {
+      color: var(--success);
+    }
+
+    .status-error {
+      color: var(--error);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Agentic Code Analyzer</h1>
+
+  <textarea id="code" placeholder="Enter your Python code here..."></textarea>
+  <button onclick="analyzeCode()">Analyze Code</button>
+
+  <div id="result" class="output"></div>
+
+  <script>
+    async function analyzeCode() {
+      const code = document.getElementById("code").value.trim();
+      const resultDiv = document.getElementById("result");
+      resultDiv.style.display = "block";
+      resultDiv.innerHTML = "⏳ <span class='status-success'>Analyzing your code... Please wait.</span>";
+
+      if (!code) {
+        resultDiv.innerHTML = "<span class='status-error'>⚠️Please enter some Python code to analyze.</span>";
+        return;
+      }
+
+      try {
+        const res = await fetch("http://127.0.0.1:8000/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code })
+        });
+
+        const data = await res.json();
+        let html = "";
+
+        html += `<div class='section'><h3>Syntax Check:</h3> ${data.syntax_result.is_valid ? "✅ No errors" : "❌ " + data.syntax_result.error}</div>`;
+        html += `<div class='divider'></div>`;
+
+        html += `<div class='section'><h3>Static Analysis:</h3> Pylint & Mypy report: ${data.static_result.mypy.mypy}</div>`;
+        html += `<div class='divider'></div>`;
+
+        html += `<div class='section'><h3>Complexity:</h3> Average = ${data.complexity_result.average_complexity}</div>`;
+        html += `<div class='divider'></div>`;
+
+        html += `<div class='section'><h3>Execution Output:</h3> ${data.execution_result.stdout || "No output"}`;
+        if (data.execution_result.exception) {
+          html += `<br><b>Exception:</b> ${data.execution_result.exception}`;
+        }
+        html += `</div><div class='divider'></div>`;
+
+        html += `<div class='section'><h3>Gemini Suggestions:</h3><pre>${data.llm_suggestions}</pre></div>`;
+
+        resultDiv.innerHTML = html;
+      } catch (err) {
+        resultDiv.innerHTML = `<span class='status-error'>Error connecting to backend.</span>`;
+        console.error(err);
+      }
+    }
+  </script>
+
+</body>
+</html>

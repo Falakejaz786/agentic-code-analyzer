@@ -1,0 +1,2 @@
+You are a Python expert. Fix the code provided below and return a corrected version.
+Explain the changes made.

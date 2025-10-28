@@ -1,0 +1,10 @@
+requests
+pylint
+mypy
+astor
+networkx
+fastapi
+uvicorn
+python-dotenv
+google-generativeai
+radon
