@@ -18,6 +18,16 @@ app.add_middleware(
 class CodeRequest(BaseModel):
     code: str
 
+# Root endpoint
+@app.get("/")
+async def root():
+    return {"message": "Agentic Code Analyzer API", "status": "running", "endpoints": {"/analyze": "POST - Analyze Python code"}}
+
+# Health check endpoint
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}
+
 # Endpoint to analyze Python code
 @app.post("/analyze")
 async def analyze_code(request: CodeRequest):
